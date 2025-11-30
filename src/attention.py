@@ -2,11 +2,14 @@ import torch
 import math
 import pytorch_lightning as pl 
 
-def scaled_dot_product(q,k,v):
+def scaled_dot_product(q,k,v,mask=None):
     try:
         d_k = q.size()[-1]
         numerator = torch.matmul(q,k.transpose(-2,-1))
         attention_scores = numerator/math.sqrt(d_k)
+
+        if mask is not None:
+            attention_scores = attention_scores.masked_fill(mask == 0, -9e15)
 
         ### Softmax
         stable_scores = attention_scores - torch.max(attention_scores, dim=-1, keepdim=True).values
@@ -21,12 +24,21 @@ def scaled_dot_product(q,k,v):
 
 
 ### Test
-
-seq_len, d_k = 3, 2
+d_model = 12
+heads = 1
+seq_len, d_k = 3, d_model//heads
 pl.seed_everything(42)
-q = torch.randn(seq_len, d_k)
-k = torch.randn(seq_len, d_k)
-v = torch.randn(seq_len, d_k)
+
+X = torch.randn(seq_len,d_model)
+
+W_q = torch.randn(d_model,d_k)
+W_k = torch.randn(d_model,d_k)
+W_v = torch.randn(d_model,d_k)
+
+# Linear projection of X seq into q,k,v
+q = X @ W_q
+k = X @ W_k
+v = X @ W_v
 values, attention = scaled_dot_product(q, k, v)
 print("Q\n", q)
 print("K\n", k)
