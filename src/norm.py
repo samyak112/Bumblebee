@@ -22,6 +22,13 @@ class SubLayerConnecion(nn.Module):
         self.norm = LayerNorm(size)
         self.dropout = nn.Dropout(dropout)
     
+    '''
+        We apply residual connections separately to MHA and FFN so that the
+        FFN is not forced to operate only on the fully transformed output of
+        MHA. The residual path preserves the input representation, allowing
+        each sublayer to learn a refinement rather than an irreversible
+        transformation.
+    '''
     def forward(self,x,sublayer):
         return x + self.dropout(sublayer(self.norm(x)))
 
