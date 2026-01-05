@@ -1,0 +1,22 @@
+indent-width = 4
+line-length = 120
+
+target-version = "py312"
+
+[lint]
+select = ["A", "ARG", "ASYNC", 'B', "COM", "C901", "DJ", "E", "F", "I", "PTH", "Q"]
+
+[lint.isort]
+case-sensitive = true
+combine-as-imports = true
+
+[lint.pycodestyle]
+max-doc-length = 120
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
