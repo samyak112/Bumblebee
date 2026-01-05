@@ -1,6 +1,5 @@
 import torch.nn as nn
 
-
 '''
 Still figuring out what is the need to use a feed forward network 
 when we already have non linearities in attention mechanism.
@@ -17,4 +16,19 @@ class FeedForwardNetwork(nn.Module):
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
+        '''
+            Position-wise feed-forward network.
+            Applied independently to each token.
+
+            This block does not mix information across tokens.
+            Instead, it mixes and nonlinearly transforms the dimensions
+            of a single token embedding, allowing feature–feature
+            interactions that attention alone cannot create.
+
+            The expansion (d_model -> d_ff) creates a larger feature space,
+            the nonlinearity introduces new features, and the projection
+            back to d_model compresses them for the next layer.
+
+            MHA decides what information to gather from other tokens, and FFN decides how to transform and interpret that gathered information inside each token.
+        '''
         return self.w_2(self.dropout(self.w_1(x).relu()))
