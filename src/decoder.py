@@ -5,9 +5,9 @@ from .norm import SubLayerConnection,LayerNorm
 
 
 class Decoder(nn.Module):
-    def __init__(self, d_model, n_blocks) -> None:
+    def __init__(self, d_model, n_blocks,dropout:float=0.1) -> None:
         super().__init__()
-        self.decoder_blocks = create_copy(DecoderLayer(d_model=d_model, n_heads=d_model // 2), n_blocks)
+        self.decoder_blocks = create_copy(DecoderLayer(d_model=d_model, n_heads=d_model // 2,dropout=dropout), n_blocks)
         self.norm = LayerNorm(features=d_model)
 
     def forward(self,x):

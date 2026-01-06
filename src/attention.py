@@ -10,7 +10,7 @@ def scaled_dot_product(q, k, v, mask=None, dropout=None):
     d_k = q.size()[-1]
 
     """
-        Scale QKᵀ by sqrt(d_k) to control variance of the dot product. Without scaling, logits grow with dimension, causing softmax saturation and very small gradients.
+        Scale QK^T by sqrt(d_k) to control variance of the dot product. Without scaling, logits grow with dimension, causing softmax saturation and very small gradients.
     """
     attention_scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(d_k)
 
