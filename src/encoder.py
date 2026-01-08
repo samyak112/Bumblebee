@@ -11,7 +11,7 @@ class Encoder(nn.Module):
         super().__init__()
 
         self.encoder_blocks = create_copy(
-            EncoderLayer(d_model=d_model, n_heads=d_model // 2, dropout=dropout),
+            EncoderBlock(d_model=d_model, n_heads=d_model // 2, dropout=dropout),
             n_blocks,
         )
         self.norm = LayerNorm(d_model)
@@ -22,7 +22,7 @@ class Encoder(nn.Module):
         return self.norm(x)
 
 
-class EncoderLayer(nn.Module):
+class EncoderBlock(nn.Module):
     def __init__(
         self,
         d_model: int = 8,
