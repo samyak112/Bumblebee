@@ -73,7 +73,8 @@ then to layer norm they both can compress down to [-1,+1], they dont provide dif
 
 I THOUGHT THAT BECAUSE BOTH ARE JUST NORMALIZING AND REDUCING THE MAGNITUDE WHY NOT JUST USE LAYER NORM IN SCALED DOT PRODUCT AS WELL BUT I NOW KNOW WHY , THEY SOLVE VERY DIFFERENT PROBLEMS AND INTERCHANGING THEM WILL JUST KILL BOTH FRONTS
 
-### why layer norm is a learnable thing? isnt it just math which brings std to 1 and blah blah?
+### why layer norm is a learnable thing? isnt it just math which brings std to 1?
+Layer norm does normalize the input (mean 0, std 1), but if that were all it did, it might erase useful scale or shift information the model needs. That’s why it has learnable parameters: γ (scale) and β (shift). They let the network restore or adjust the normalized representation if the raw scale or offset actually matters for learning. So the normalization stabilizes training, but the learnable part ensures the model doesn’t lose the freedom to represent what it needs.
 
 ### What would happen if LN is not learnable?
 
