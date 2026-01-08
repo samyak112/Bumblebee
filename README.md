@@ -33,10 +33,12 @@ implementation details and intuitions:
 
 - [Why LayerNorm and √dₖ Scaling Are Not the Same Thing ](https://www.linkedin.com/feed/update/urn:li:activity:7409122355836313600/)
 - [Scaling in Scaled Dot-Product Attention ](https://dev.to/samyak112/scaling-is-all-you-need-understanding-sqrtd-in-self-attention-29pk) 
-- [How Linear Projections Enable Head-Wise Specialization](https://www.linkedin.com/feed/update/urn:li:activity:7411658892079820800/) 
+- [How Linear Projections Enable Head-Wise Specialization](https://www.linkedin.com/feed/update/urn:li:activity:7411658892079820800/)
+- You can look at other notes in the [notes](https://github.com/samyak112/Bumblebee/tree/main/notes) folder of this repo
   
 
 These notes reflect my own understanding while implementing the model and are
 informed by discussions in research-focused communities such as Hugging Face
 and Yannic Kilcher’s Discord.
+
 
