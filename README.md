@@ -1,4 +1,4 @@
-## Bumblebee — A Toy Transformer From Scratch
+## Bumblebee — A Minimal Transformer Built From Scratch
 
 Bumblebee is a **minimal Transformer implementation written from scratch**.
 The goal of this project is to understand how Transformers work at both the
@@ -40,5 +40,6 @@ implementation details and intuitions:
 These notes reflect my own understanding while implementing the model and are
 informed by discussions in research-focused communities such as Hugging Face
 and Yannic Kilcher’s Discord.
+
 
 
