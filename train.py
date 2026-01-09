@@ -9,15 +9,8 @@ from src.embeddings import convert_sequence_to_tensor
 from src.transformer import BumbleBee
 from src.utils import length_ok, make_std_mask
 
-d_model = 512
-
-# 1) Toy parallel data (you can add more examples)
-# input_sentences = ["Autobots, transform and roll out"]
-# target_sentences = ["<start> Autobots, transformez-vous et déployez-vous ! <eos>"]
-
-
 dataset = load_dataset("bentrevett/multi30k")
-MAX_SAMPLES = 1000
+MAX_SAMPLES = 10000
 dataset = dataset["train"].select(range(MAX_SAMPLES))
 dataset = dataset.filter(length_ok)
 
@@ -33,17 +26,21 @@ input_ids, target_ids, vocab, tokenizer = convert_sequence_to_tensor(
     output_sequence=target_sentences,
 )
 
-# 2) Build decoder input (tgt_in) and prediction targets (tgt_out)
-#    teacher forcing: predict token t+1 given tokens <= t
+device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+
 tgt_in = target_ids[:, :-1]  # fed to decoder
 tgt_out = target_ids[:, 1:]  # ground truth
+
+input_ids = input_ids.to(device)
+tgt_in = tgt_in.to(device)
+tgt_out = tgt_out.to(device)
 
 
 pad_id = tokenizer.pad_token_id
 tgt_mask = make_std_mask(tgt_in, pad_id)
 
-# 3) Model + loss + optimizer
-model = BumbleBee(vocab_size=len(vocab), d_model=d_model, n_blocks=2, dropout=0.1)
+
+model = BumbleBee(vocab_size=len(vocab), d_model=512, n_blocks=6, dropout=0.1).to(device)
 criterion = nn.NLLLoss(ignore_index=pad_id)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 

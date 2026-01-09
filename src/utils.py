@@ -10,13 +10,13 @@ def create_copy(module, N):
     return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
 
 
-def subsequent_mask(size):
-    "Mask out subsequent positions."
+def subsequent_mask(size, device):
     attn_shape = (1, size, size)
-    subsequent_mask = torch.triu(torch.ones(attn_shape), diagonal=1).type(
-        torch.uint8,
-    )
-    return subsequent_mask == 0
+    subsequent_mask = torch.triu(
+        torch.ones(attn_shape, device=device),
+        diagonal=1,
+    ).bool()
+    return subsequent_mask
 
 
 """
@@ -50,10 +50,10 @@ def subsequent_mask(size):
 """
 
 
-def make_std_mask(tgt, pad):
+def make_std_mask(tgt, pad, device="mps"):
     "Create a mask to hide padding and future words."
     tgt_mask = (tgt != pad).unsqueeze(-2)
-    tgt_mask = tgt_mask & subsequent_mask(tgt.size(-1)).type_as(
+    tgt_mask = tgt_mask & subsequent_mask(tgt.size(-1), device).type_as(
         tgt_mask.data,
     )
     return tgt_mask
