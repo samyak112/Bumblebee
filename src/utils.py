@@ -50,7 +50,7 @@ def subsequent_mask(size, device):
 """
 
 
-def make_std_mask(tgt, pad, device="mps"):
+def make_std_mask(tgt, pad, device="cpu"):
     "Create a mask to hide padding and future words."
     tgt_mask = (tgt != pad).unsqueeze(-2)
     tgt_mask = tgt_mask & subsequent_mask(tgt.size(-1), device).type_as(

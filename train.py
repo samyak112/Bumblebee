@@ -10,7 +10,7 @@ from src.transformer import BumbleBee
 from src.utils import length_ok, make_std_mask
 
 dataset = load_dataset("bentrevett/multi30k")
-MAX_SAMPLES = 10000
+MAX_SAMPLES = 1000
 dataset = dataset["train"].select(range(MAX_SAMPLES))
 dataset = dataset.filter(length_ok)
 
@@ -40,9 +40,9 @@ pad_id = tokenizer.pad_token_id
 tgt_mask = make_std_mask(tgt_in, pad_id)
 
 
-model = BumbleBee(vocab_size=len(vocab), d_model=512, n_blocks=6, dropout=0.1).to(device)
+model = BumbleBee(vocab_size=len(vocab), d_model=128, n_blocks=2, dropout=0.1).to(device)
 criterion = nn.NLLLoss(ignore_index=pad_id)
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
 BATCH_SIZE = 20
 EPOCHS = 10
