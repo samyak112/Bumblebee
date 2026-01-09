@@ -1,9 +1,10 @@
 import torch.nn as nn
 from torch import Tensor
 
-from .src.decoder import Decoder
-from .src.embeddings import Embeddings, convert_sequence_to_tensor, get_positional_encoding
-from .src.encoder import Encoder
+from src.decoder import Decoder
+from src.embeddings import Embeddings, get_positional_encoding
+from src.encoder import Encoder
+from src.utils import Generator
 
 
 class BumbleBee(nn.Module):
@@ -16,13 +17,15 @@ class BumbleBee(nn.Module):
         dropout: float = 0.1,
     ):
         super().__init__()
-        self.embedding = Embeddings(vocab_size, d_model)
+        self.embedding = Embeddings(d_model, vocab_size)
         self.encoder = Encoder(d_model=d_model, n_blocks=n_blocks, dropout=dropout)
         self.decoder = Decoder(d_model=d_model, n_blocks=n_blocks, dropout=dropout)
         position = get_positional_encoding(d_model=d_model)
+        self.generator = Generator(d_model=d_model, vocab=vocab_size)
+        # its in buffer so that it doesnt get trained
         self.register_buffer("pe", position)
 
-    def forward(self, src_ids: Tensor, tgt_ids: Tensor):
+    def forward(self, src_ids: Tensor, tgt_ids: Tensor, tgt_mask=None):
         input_embeddings = self.embedding(src_ids)
         output_embeddings = self.embedding(tgt_ids)
 
@@ -54,18 +57,6 @@ class BumbleBee(nn.Module):
         output_embeddings = output_embeddings + self.pe[:, : output_embeddings.size(1), :]
 
         encoder_output = self.encoder(input_embeddings)
-        decoder_output = self.decoder(encoder_output, output_embeddings)
-
-
-d_model = 8
-
-input_sentence = ["Autobots, transform and roll out"]
-target_sentence = ["Autobots, transformez-vous et déployez-vous !"]
-
-input_ids_tensor, output_ids_tensor, vocab_size = convert_sequence_to_tensor(
-    input_sequence=input_sentence,
-    output_sequence=target_sentence,
-)
-
-transformer = BumbleBee(vocab_size=vocab_size, d_model=d_model, n_blocks=6, dropout=0.1)
-transformer(input_ids_tensor, output_ids_tensor)
+        decoder_output = self.decoder(encoder_output, output_embeddings, tgt_mask)
+        output = self.generator(decoder_output)
+        return output

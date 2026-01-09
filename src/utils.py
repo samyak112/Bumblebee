@@ -2,6 +2,7 @@ import copy
 
 import torch
 import torch.nn as nn
+from torch.nn.functional import log_softmax
 
 
 def create_copy(module, N):
@@ -56,3 +57,18 @@ def make_std_mask(tgt, pad):
         tgt_mask.data,
     )
     return tgt_mask
+
+
+class Generator(nn.Module):
+    "Define standard linear + softmax generation step."
+
+    def __init__(self, d_model, vocab):
+        super(Generator, self).__init__()
+        self.proj = nn.Linear(d_model, vocab)
+
+    def forward(self, x):
+        return log_softmax(self.proj(x), dim=-1)
+
+
+def length_ok(ex):
+    return len(ex["de"].split()) <= 30 and len(ex["en"].split()) <= 30

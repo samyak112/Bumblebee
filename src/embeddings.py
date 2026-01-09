@@ -11,8 +11,9 @@ def convert_sequence_to_tensor(input_sequence: list[str], output_sequence: list[
         raise Exception("Input and Output Sequence length must be same")
 
     tokenizer = AutoTokenizer.from_pretrained("gpt2")
+    tokenizer.add_special_tokens({"pad_token": "[PAD]"})
+
     vocab = tokenizer.get_vocab()
-    vocab_size = len(vocab)
 
     input_ids = tokenizer(
         input_sequence,
@@ -27,7 +28,7 @@ def convert_sequence_to_tensor(input_sequence: list[str], output_sequence: list[
         return_tensors="pt",
     )
 
-    return input_ids["input_ids"], target_ids["input_ids"], vocab_size
+    return input_ids["input_ids"], target_ids["input_ids"], vocab, tokenizer
 
 
 def get_positional_encoding(d_model, max_len=100):

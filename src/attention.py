@@ -63,6 +63,9 @@ class MultiHeadAttention(nn.Module):
         key = self.linears[1](key)
         value = self.linears[2](value)
 
+        if mask is not None:
+            mask = mask.unsqueeze(1)
+
         """
             Split the projected embeddings into multiple attention heads.
             This is equivalent to manually slicing the embedding
